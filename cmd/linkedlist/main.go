@@ -4,6 +4,11 @@ import (
 	"fmt"
 )
 
+type List[T any] interface {
+	insert(val T)
+	PrintAll()
+}
+
 type Node[T any] struct {
 	value T
 	next  *Node[T]
@@ -13,7 +18,7 @@ type LinkedList[T any] struct {
 	head *Node[T]
 }
 
-func Insert[T any](l *LinkedList[T], val T) {
+func (l *LinkedList[T]) insert(val T) {
 	var newNode = new(Node[T])
 	newNode.value = val
 	if l.head == nil {
@@ -27,7 +32,7 @@ func Insert[T any](l *LinkedList[T], val T) {
 	curr.next = newNode
 }
 
-func PrintAll[T any](l *LinkedList[T]) {
+func (l *LinkedList[T]) PrintAll() {
 	curr := l.head
 	for curr != nil {
 		fmt.Println(curr.value)
@@ -36,9 +41,10 @@ func PrintAll[T any](l *LinkedList[T]) {
 }
 
 func main() {
-	ll := new(LinkedList[string])
-	Insert(ll, "123")
-	Insert(ll, "456")
-	Insert(ll, "789")
-	PrintAll(ll)
+	var l List[int]
+	l = new(LinkedList[int])
+	l.insert(123)
+	l.insert(456)
+	l.insert(789)
+	l.PrintAll()
 }
