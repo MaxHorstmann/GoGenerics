@@ -18,8 +18,8 @@ type LinkedList[T any] struct {
 	head *Node[T]
 }
 
-func (l *LinkedList[T]) insert(val T) {
-	var newNode = new(Node[T])
+func (l *LinkedList[U]) insert(val U) {
+	var newNode = new(Node[U])
 	newNode.value = val
 	if l.head == nil {
 		l.head = newNode
