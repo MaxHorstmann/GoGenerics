@@ -6,14 +6,37 @@ import (
 
 type collection[T comparable] []T
 
-func (input collection[T]) where(pred func(T) bool) []T {
-	result := []T{}
+func (input collection[T]) where(pred func(T) bool) collection[T] {
+	result := collection[T]{}
 	for _, j := range input {
 		if pred(j) {
 			result = append(result, j)
 		}
 	}
 	return result
+}
+
+func select2[T comparable, U comparable](input collection[T], transform func(T) U) collection[U] {
+	result := collection[U]{}
+	for _, j := range input {
+		result = append(result, transform(j))
+	}
+	return result
+}
+
+type collectionPlusSecondType[T comparable, U comparable] []T
+
+func (input collectionPlusSecondType[T, U]) select3(transform func(T) U) collection[U] {
+	result := collection[U]{}
+	for _, j := range input {
+		result = append(result, transform(j))
+	}
+	return result
+}
+
+type product struct {
+	ProductName  string
+	UnitsInStock int
 }
 
 func linq1() {
@@ -23,21 +46,15 @@ func linq1() {
 	fmt.Println(lowNums)
 }
 
-type product struct {
-	ProductName  string
-	UnitsInStock int
-}
-
 func linq2() {
 	products := collection[product]{
 		{ProductName: "milk", UnitsInStock: 0},
 		{ProductName: "water", UnitsInStock: 4},
 		{ProductName: "beer", UnitsInStock: 0}}
-	soldOutProducts := products.where(func(p product) bool { return p.UnitsInStock == 0 })
+	soldOutProducts := collectionPlusSecondType[product, string](products.where(func(p product) bool { return p.UnitsInStock == 0 })).
+		select3(func(p product) string { return p.ProductName })
 	fmt.Println("Sold out products:")
-	for _, p := range soldOutProducts {
-		fmt.Printf("%s is sold out!\n", p.ProductName)
-	}
+	fmt.Println(soldOutProducts)
 }
 
 func main() {
